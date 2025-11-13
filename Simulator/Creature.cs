@@ -57,6 +57,29 @@ public class Creature
         if (inputLevel > 10) return 10;
         return inputLevel;
     }
+
+    public void Go(Direction direction)
+    {
+        string lowerDirection = direction.ToString().ToLower();
+
+        Console.WriteLine($"{Name} goes {lowerDirection}.");
+    }
+
+    public void Go(Direction[] directions)
+    {
+        foreach (Direction direction in directions)
+        {
+            Go(direction);
+        }
+    }
+
+    public void Go(string directionsString)
+    {
+        Direction[] directions = DirectionParser.Parse(directionsString);
+
+        Go(directions);
+    }
+
     public void SayHi()
     {
         Console.WriteLine($"Hi, I'm {Name} at level {Level}!");
