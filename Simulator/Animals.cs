@@ -2,7 +2,45 @@
 
 public class Animals
 {
-    public required string Description { get; init; }
+    private string _description = "Unknown";
+
+    public string Description
+    {
+        get => _description;
+        init => _description = ValidationDesc(value);
+    }
     public uint Size { get; set; } = 3;
-    public string Info => $"{Description},  [{Size}]";
+
+    public Animals()
+    {
+
+    }
+
+    public Animals(string description)
+    {
+        Description = description;
+    }
+    private string ValidationDesc(string inputDesc)
+    {
+        string newDesc = (inputDesc ?? "").Trim();
+
+        if (newDesc.Length > 15)
+        {
+            newDesc = newDesc.Substring(0, 15).TrimEnd();
+        }
+
+        if (newDesc.Length < 3)
+        {
+            newDesc = newDesc.PadRight(3, '#');
+        }
+
+        if (newDesc.Length > 0 && char.IsLower(newDesc[0]))
+        {
+            newDesc = char.ToUpper(newDesc[0]) + newDesc.Substring(1);
+        }
+
+        return newDesc;
+    }
+    public string Info => $"{Description} <{Size}>";
 }
+
