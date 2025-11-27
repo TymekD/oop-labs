@@ -8,13 +8,13 @@ public abstract class Creature
     public string Name
     {
         get => _name;
-        init => _name = ValidationAndFormatingName(value);
+        init => _name = Validator.Shortener(value,3 , 25, '#');
     }
 
     public int Level
     {
         get => _level;
-        init => _level = ValidateLevel(value);
+        init => _level = Validator.Limiter(value, 1, 10);
     }
 
     public Creature()
@@ -27,35 +27,6 @@ public abstract class Creature
     {
         Name = name;
         Level = level;
-    }
-    private string ValidationAndFormatingName(string inputName)
-    {
-        string newName = (inputName ?? "").Trim();
-
-        if (newName.Length > 25)
-        {
-            newName = newName.Substring(0, 25).TrimEnd();
-        }
-
-        if (newName.Length < 3)
-        {
-            newName = newName.PadRight(3, '#');
-        }
-
-        if (newName.Length > 0 && char.IsLower(newName[0]))
-        {
-            newName = char.ToUpper(newName[0]) + newName.Substring(1);
-        }
-
-        return newName;
-
-    }
-
-    public int ValidateLevel(int inputLevel)
-    {
-        if (inputLevel < 1) return 1;
-        if (inputLevel > 10) return 10;
-        return inputLevel;
     }
 
     public void Go(Direction direction)
@@ -97,4 +68,35 @@ public abstract class Creature
     }
 
     public abstract int Power { get; }
+
+    /*
+private string ValidationAndFormatingName(string inputName)
+{
+    string newName = (inputName ?? "").Trim();
+
+    if (newName.Length > 25)
+    {
+        newName = newName.Substring(0, 25).TrimEnd();
+    }
+
+    if (newName.Length < 3)
+    {
+        newName = newName.PadRight(3, '#');
+    }
+
+    if (newName.Length > 0 && char.IsLower(newName[0]))
+    {
+        newName = char.ToUpper(newName[0]) + newName.Substring(1);
+    }
+
+    return newName;
+
+}
+
+public int ValidateLevel(int inputLevel)
+{
+    if (inputLevel < 1) return 1;
+    if (inputLevel > 10) return 10;
+    return inputLevel;
+}*/
 }

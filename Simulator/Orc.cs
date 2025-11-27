@@ -33,15 +33,10 @@ public class Orc : Creature
 
     public override void SayHi()
     {
-        Console.WriteLine($"Hi, I'm {Name}, my level is {Level}, agility {Rage}.");
+        Console.WriteLine($"Hi, I'm {Name}, my level is {Level}, rage {Rage}.");
     }
 
     public override int Power => 7 * Level + 3 * Rage;
 
-    private int StatLimit(int inputStat)
-    {
-        if (inputStat < 1) return 1;
-        if (inputStat > 10) return 10;
-        return inputStat;
-    }
+    private int StatLimit(int inputStat) => Validator.Limiter(inputStat, 0, 10);
 }

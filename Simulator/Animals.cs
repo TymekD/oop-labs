@@ -7,7 +7,7 @@ public class Animals
     public string Description
     {
         get => _description;
-        init => _description = ValidationDesc(value);
+        init => _description = Validator.Shortener(value, 3, 15, '#');
     }
     public uint Size { get; set; } = 3;
 
@@ -20,6 +20,7 @@ public class Animals
     {
         Description = description;
     }
+    /*
     private string ValidationDesc(string inputDesc)
     {
         string newDesc = (inputDesc ?? "").Trim();
@@ -41,6 +42,8 @@ public class Animals
 
         return newDesc;
     }
+    */
     public string Info => $"{Description} <{Size}>";
+    
 }
 

@@ -8,7 +8,7 @@ internal class Program
     {
         Console.WriteLine("Starting Simulator!\n");
 
-        //TestCreatures();
+        TestValidation();
         Console.WriteLine("\n");
         //TestDirections();
         TestElfsAndOrcs();
@@ -46,30 +46,30 @@ internal class Program
             Console.WriteLine($"{creature.Name,-15}: {creature.Power}");
         }
     }
-    /*
-    static void TestCreatures()
+    
+    static void TestValidation()
     {
-        Creature c = new() { Name = "   Shrek    ", Level = 20 };
+        Creature c = new Orc() { Name = "   Shrek    ", Level = 20 };
         c.SayHi();
         c.Upgrade();
         Console.WriteLine(c.Info);
 
-        c = new("  ", -5);
+        c = new Orc("  ", -5);
         c.SayHi();
         c.Upgrade();
         Console.WriteLine(c.Info);
 
-        c = new("  donkey ") { Level = 7 };
+        c = new Orc("  donkey ") { Level = 7 };
         c.SayHi();
         c.Upgrade();
         Console.WriteLine(c.Info);
 
-        c = new("Puss in Boots – a clever and brave cat.");
+        c = new Orc("Puss in Boots – a clever and brave cat.");
         c.SayHi();
         c.Upgrade();
         Console.WriteLine(c.Info);
 
-        c = new("a                            troll name", 5);
+        c = new Orc("a                            troll name", 5);
         c.SayHi();
         c.Upgrade();
         Console.WriteLine(c.Info);
@@ -80,7 +80,7 @@ internal class Program
         a = new() { Description = "Mice           are great", Size = 40 };
         Console.WriteLine(a.Info);
     }
-
+    /*
     static void TestDirections()
     {
         Creature c = new("Shrek", 7);
