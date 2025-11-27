@@ -1,6 +1,6 @@
 ﻿namespace Simulator;
 
-public class Creature
+public abstract class Creature
 {
     private string _name;
     private int _level;
@@ -51,7 +51,7 @@ public class Creature
 
     }
 
-    private int ValidateLevel(int inputLevel)
+    public int ValidateLevel(int inputLevel)
     {
         if (inputLevel < 1) return 1;
         if (inputLevel > 10) return 10;
@@ -80,10 +80,8 @@ public class Creature
         Go(directions);
     }
 
-    public void SayHi()
-    {
-        Console.WriteLine($"Hi, I'm {Name} at level {Level}!");
-    }
+    public abstract void SayHi();
+    
 
     public void Upgrade()
     {
@@ -92,8 +90,11 @@ public class Creature
             _level += 1;
         }
     }
-    public string Info
+
+    public virtual string Info
     {
         get { return $"{Name} (level {Level})"; }
     }
+
+    public abstract int Power { get; }
 }
