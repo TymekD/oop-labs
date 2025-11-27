@@ -62,12 +62,14 @@ public abstract class Creature
         }
     }
 
-    public virtual string Info
+    public abstract string Info { get; }
+    public abstract int Power { get; }
+    public override string ToString()
     {
-        get { return $"{Name} (level {Level})"; }
+        var typeName = GetType().Name.ToUpperInvariant();
+        return $"{typeName}: {Info}";
     }
 
-    public abstract int Power { get; }
 
     /*
 private string ValidationAndFormatingName(string inputName)

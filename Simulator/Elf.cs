@@ -37,6 +37,7 @@ public class Elf : Creature
     }
 
     public override int Power => 8 * Level + 2 * Agility;
+    public override string Info => $"{Name} [{Level}][{Agility}]";
 
     private int StatLimit(int inputStat) => Validator.Limiter(inputStat, 0, 10);
 }

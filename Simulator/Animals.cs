@@ -20,30 +20,36 @@ public class Animals
     {
         Description = description;
     }
-    /*
-    private string ValidationDesc(string inputDesc)
+
+    public virtual string Info => $"{Description} <{Size}>";
+
+    public override string ToString()
     {
-        string newDesc = (inputDesc ?? "").Trim();
+        var typeName = GetType().Name.ToUpperInvariant();
+        return $"{typeName}: {Info}";
+    }    
+    /*
+ private string ValidationDesc(string inputDesc)
+ {
+     string newDesc = (inputDesc ?? "").Trim();
 
-        if (newDesc.Length > 15)
-        {
-            newDesc = newDesc.Substring(0, 15).TrimEnd();
-        }
+     if (newDesc.Length > 15)
+     {
+         newDesc = newDesc.Substring(0, 15).TrimEnd();
+     }
 
-        if (newDesc.Length < 3)
-        {
-            newDesc = newDesc.PadRight(3, '#');
-        }
+     if (newDesc.Length < 3)
+     {
+         newDesc = newDesc.PadRight(3, '#');
+     }
 
-        if (newDesc.Length > 0 && char.IsLower(newDesc[0]))
-        {
-            newDesc = char.ToUpper(newDesc[0]) + newDesc.Substring(1);
-        }
+     if (newDesc.Length > 0 && char.IsLower(newDesc[0]))
+     {
+         newDesc = char.ToUpper(newDesc[0]) + newDesc.Substring(1);
+     }
 
-        return newDesc;
-    }
-    */
-    public string Info => $"{Description} <{Size}>";
-    
+     return newDesc;
+ }
+ */
 }
 
