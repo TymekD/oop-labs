@@ -9,13 +9,16 @@ internal class Program
     {
         Console.WriteLine("Starting Simulator!\n");
 
-        TestValidation();
-        Console.WriteLine("\n");
-        TestObjectsToString();
-        Console.WriteLine("\n");
-        TestElfsAndOrcs();
+        //TestValidation();
+        //Console.WriteLine("\n");
+        //TestObjectsToString();
+        //Console.WriteLine("\n");
+        //TestElfsAndOrcs();
         //Console.WriteLine("\n");
         //TestDirections();
+        Point p = new(10, 25);
+        Console.WriteLine(p.Next(Direction.Right));          // (11, 25)
+        Console.WriteLine(p.NextDiagonal(Direction.Right));  // (11, 24)
     }
 
     static void TestElfsAndOrcs()
