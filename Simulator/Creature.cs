@@ -8,7 +8,7 @@ public abstract class Creature
     public string Name
     {
         get => _name;
-        init => _name = Validator.Shortener(value,3 , 25, '#');
+        init => _name = Validator.Shortener(value, 3, 25, '#');
     }
 
     public int Level
@@ -29,30 +29,32 @@ public abstract class Creature
         Level = level;
     }
 
-    public void Go(Direction direction)
-    {
-        string lowerDirection = direction.ToString().ToLower();
+    public string Go(Direction direction) => $"{direction.ToString().ToLower()}";
 
-        Console.WriteLine($"{Name} goes {lowerDirection}.");
-    }
-
-    public void Go(Direction[] directions)
+    public string[] Go(Direction[] directions)
     {
-        foreach (Direction direction in directions)
+        if (directions == null)
         {
-            Go(direction);
+            return new string[0];
         }
+
+        var results = new string[directions.Length];
+
+        for (int i = 0; i < directions.Length; i++)
+        {
+            results[i] = Go(directions[i]);
+        }
+
+        return results;
     }
 
-    public void Go(string directionsString)
+    public string[] Go(string directionsString)
     {
         Direction[] directions = DirectionParser.Parse(directionsString);
-
-        Go(directions);
+        return Go(directions);
     }
 
-    public abstract void SayHi();
-    
+    public abstract string Greeting();
 
     public void Upgrade()
     {
@@ -64,41 +66,10 @@ public abstract class Creature
 
     public abstract string Info { get; }
     public abstract int Power { get; }
+
     public override string ToString()
     {
         var typeName = GetType().Name.ToUpperInvariant();
         return $"{typeName}: {Info}";
     }
-
-
-    /*
-private string ValidationAndFormatingName(string inputName)
-{
-    string newName = (inputName ?? "").Trim();
-
-    if (newName.Length > 25)
-    {
-        newName = newName.Substring(0, 25).TrimEnd();
-    }
-
-    if (newName.Length < 3)
-    {
-        newName = newName.PadRight(3, '#');
-    }
-
-    if (newName.Length > 0 && char.IsLower(newName[0]))
-    {
-        newName = char.ToUpper(newName[0]) + newName.Substring(1);
-    }
-
-    return newName;
-
-}
-
-public int ValidateLevel(int inputLevel)
-{
-    if (inputLevel < 1) return 1;
-    if (inputLevel > 10) return 10;
-    return inputLevel;
-}*/
 }

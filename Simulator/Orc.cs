@@ -4,6 +4,7 @@ public class Orc : Creature
 {
     private int _rage;
     private int _huntCount;
+
     public int Rage
     {
         get => _rage;
@@ -20,7 +21,7 @@ public class Orc : Creature
         _rage = StatLimit(agility);
     }
 
-
+    // USUNIĘTE wyświetlanie komunikatów
     public void Hunt()
     {
         _huntCount++;
@@ -28,12 +29,13 @@ public class Orc : Creature
         {
             _rage = StatLimit(_rage + 1);
         }
-        Console.WriteLine($"{Name} is hunting!");
+        // brak Console.WriteLine – metoda tylko zmienia stan
     }
 
-    public override void SayHi()
+    // ZAMIANA: void SayHi() -> string Greeting()
+    public override string Greeting()
     {
-        Console.WriteLine($"Hi, I'm {Name}, my level is {Level}, rage {Rage}.");
+        return $"Hi, I'm {Name}, my level is {Level}, rage {Rage}.";
     }
 
     public override int Power => 7 * Level + 3 * Rage;
