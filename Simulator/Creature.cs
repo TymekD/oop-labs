@@ -1,4 +1,6 @@
-﻿namespace Simulator;
+﻿using Simulator.Maps;
+
+namespace Simulator;
 
 public abstract class Creature
 {
@@ -29,29 +31,52 @@ public abstract class Creature
         Level = level;
     }
 
-    public string Go(Direction direction) => $"{direction.ToString().ToLower()}";
+    /// <summary>
+    /// Map on which the creature currently is. May be null until assigned.
+    /// </summary>
+    public Map? CurrentMap { get; private set; }
 
-    public string[] Go(Direction[] directions)
+    /// <summary>
+    /// Current position of the creature on the map. Null if creature has no map.
+    /// </summary>
+    public Point? Position { get; private set; }
+
+    /// <summary>
+    /// Internal helper used by Map to place creature on a map.
+    /// </summary>
+    internal void SetLocation(Map map, Point position)
     {
-        if (directions == null)
-        {
-            return new string[0];
-        }
-
-        var results = new string[directions.Length];
-
-        for (int i = 0; i < directions.Length; i++)
-        {
-            results[i] = Go(directions[i]);
-        }
-
-        return results;
+        CurrentMap = map;
+        Position = position;
     }
 
-    public string[] Go(string directionsString)
+    /// <summary>
+    /// Internal helper used by Map to remove creature from a map.
+    /// </summary>
+    internal void ClearLocation()
     {
-        Direction[] directions = DirectionParser.Parse(directionsString);
-        return Go(directions);
+        CurrentMap = null;
+        Position = null;
+    }
+
+    public void Go(Direction direction)
+    {
+        if (CurrentMap is null || Position is null)
+        {
+            // Creature without a map or starting position cannot move.
+            return;
+        }
+
+        var from = Position.Value;
+        var to = CurrentMap.Next(from, direction);
+
+        // If map decides that we stay in place (e.g. border), skip move.
+        if (to.Equals(from))
+        {
+            return;
+        }
+
+        CurrentMap.Move(this, from, to);
     }
 
     public abstract string Greeting();
