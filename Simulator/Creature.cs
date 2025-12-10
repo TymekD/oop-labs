@@ -92,6 +92,9 @@ public abstract class Creature
     public abstract string Info { get; }
     public abstract int Power { get; }
 
+    public abstract char Symbol { get; }
+
+
     public override string ToString()
     {
         var typeName = GetType().Name.ToUpperInvariant();

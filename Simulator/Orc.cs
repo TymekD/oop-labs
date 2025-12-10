@@ -41,5 +41,8 @@ public class Orc : Creature
     public override int Power => 7 * Level + 3 * Rage;
     public override string Info => $"{Name} [{Level}][{Rage}]";
 
+    public override char Symbol => 'O';
+
+
     private int StatLimit(int inputStat) => Validator.Limiter(inputStat, 0, 10);
 }
