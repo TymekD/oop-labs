@@ -25,7 +25,7 @@ public abstract class Map
     /// </summary>
     protected Rectangle Bounds { get; }
 
-    private readonly Dictionary<Point, List<Creature>> _creatures =
+    private readonly Dictionary<Point, List<IMappable>> _mappables =
         new();
 
     protected Map(int sizeX, int sizeY)
@@ -79,10 +79,10 @@ public abstract class Map
     /// Adds creature to a given point on this map.
     /// Also updates creature's CurrentMap and Position.
     /// </summary>
-    public void Add(Creature creature, Point position)
+    public void Add(IMappable mappable, Point position)
     {
-        if(creature is null)
-            throw new ArgumentNullException(nameof(creature));
+        if(mappable is null)
+            throw new ArgumentNullException(nameof(mappable));
 
         if (!Exist(position))
             throw new ArgumentOutOfRangeException(
@@ -90,7 +90,7 @@ public abstract class Map
                 "Position must be on the map!"
             );
 
-        if (creature.CurrentMap != null && creature.CurrentMap != this)
+        if (mappable.CurrentMap != null && mappable.CurrentMap != this)
         {
             throw new InvalidOperationException(
                 "Creature already belongs to a different map."
@@ -98,38 +98,38 @@ public abstract class Map
         }
 
         // If the creature is already on this map, remove it from previous position.
-        if (creature.CurrentMap == this && creature.Position is Point oldPos)
+        if (mappable.CurrentMap == this && mappable.Position is Point oldPos)
         {
-            InternalRemove(creature, oldPos);
+            InternalRemove(mappable, oldPos);
         }
 
-        InternalAdd(creature, position);
-        creature.SetLocation(this, position);
+        InternalAdd(mappable, position);
+        mappable.SetLocation(this, position);
     }
 
     /// <summary>
     /// Removes creature from this map (if present).
     /// </summary>
-    public void Remove(Creature creature)
+    public void Remove(IMappable mappable)
     {
-        if (creature is null)
-            throw new ArgumentNullException(nameof(creature));
+        if (mappable is null)
+            throw new ArgumentNullException(nameof(mappable));
 
-        if (creature.CurrentMap != this || creature.Position is null)
+        if (mappable.CurrentMap != this || mappable.Position is null)
             return;
 
-        InternalRemove(creature, creature.Position.Value);
-        creature.ClearLocation();
+        InternalRemove(mappable, mappable.Position.Value);
+        mappable.ClearLocation();
     }
 
     /// <summary>
     /// Moves creature from one point to another.
     /// Used by Creature.Go to keep map and creature state in sync.
     /// </summary>
-    public void Move(Creature creature, Point from, Point to)
+    public void Move(IMappable mappable, Point from, Point to)
     {
-        if (creature is null)
-            throw new ArgumentNullException(nameof(creature));
+        if (mappable is null)
+            throw new ArgumentNullException(nameof(mappable));
 
         if (!Exist(to))
             throw new ArgumentOutOfRangeException(
@@ -137,33 +137,33 @@ public abstract class Map
                 "Destination point must belong to the map."
             );
 
-        InternalRemove(creature, from);
-        InternalAdd(creature, to);
-        creature.SetLocation(this, to);
+        InternalRemove(mappable, from);
+        InternalAdd(mappable, to);
+        mappable.SetLocation(this, to);
     }
 
-    private void InternalAdd(Creature creature, Point position)
+    private void InternalAdd(IMappable mappable, Point position)
     {
-        if (!_creatures.TryGetValue(position, out var list))
+        if (!_mappables.TryGetValue(position, out var list))
         {
-            list = new List<Creature>();
-            _creatures[position] = list;
+            list = new List<IMappable>();
+            _mappables[position] = list;
         }
 
-        if (!list.Contains(creature))
+        if (!list.Contains(mappable))
         {
-            list.Add(creature);
+            list.Add(mappable);
         }
     }
 
-    private void InternalRemove(Creature creature, Point position)
+    private void InternalRemove(IMappable mappable, Point position)
     {
-        if (_creatures.TryGetValue(position, out var list))
+        if (_mappables.TryGetValue(position, out var list))
         {
-            list.Remove(creature);
+            list.Remove(mappable);
             if (list.Count == 0)
             {
-                _creatures.Remove(position);
+                _mappables.Remove(position);
             }
         }
     }
@@ -171,7 +171,7 @@ public abstract class Map
     /// <summary>
     /// Returns creatures present at given point. Empty array if there are none.
     /// </summary>
-    public IReadOnlyList<Creature> At(Point position)
+    public IReadOnlyList<IMappable> At(Point position)
     {
         if (!Exist(position))
             throw new ArgumentOutOfRangeException(
@@ -179,16 +179,16 @@ public abstract class Map
                 "Position must belong to the map."
             );
 
-        if (_creatures.TryGetValue(position, out var list))
+        if (_mappables.TryGetValue(position, out var list))
         {
             return list;
         }
 
-        return Array.Empty<Creature>();
+        return Array.Empty<IMappable>();
     }
 
     /// <summary>
     /// Overload of At using coordinates instead of Point struct.
     /// </summary>
-    public IReadOnlyList<Creature> At(int x, int y) => At(new Point(x, y));
+    public IReadOnlyList<IMappable> At(int x, int y) => At(new Point(x, y));
 }

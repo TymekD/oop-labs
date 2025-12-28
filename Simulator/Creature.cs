@@ -2,7 +2,7 @@
 
 namespace Simulator;
 
-public abstract class Creature
+public abstract class Creature : IMappable
 {
     private string _name;
     private int _level;
@@ -58,6 +58,10 @@ public abstract class Creature
         CurrentMap = null;
         Position = null;
     }
+
+    // IMappable API (explicit to keep map-management methods non-public on Creature).
+    void IMappable.SetLocation(Map map, Point position) => SetLocation(map, position);
+    void IMappable.ClearLocation() => ClearLocation();
 
     public void Go(Direction direction)
     {

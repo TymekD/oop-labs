@@ -15,15 +15,15 @@ public class MapVisualizer
 
     private char GetCellSymbol(int x, int y)
     {
-        var creatures = _map.At(x, y);
+        var mappables = _map.At(x, y);
 
-        if (creatures.Count == 0)
+        if (mappables.Count == 0)
             return ' ';
 
-        if (creatures.Count > 1)
+        if (mappables.Count > 1)
             return 'X';
 
-        return creatures[0].Symbol;
+        return mappables[0].Symbol;
     }
 
     public void Draw()

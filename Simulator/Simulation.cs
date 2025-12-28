@@ -14,7 +14,7 @@ public class Simulation
     /// <summary>
     /// Creatures moving on the map.
     /// </summary>
-    public List<Creature> Creatures { get; }
+    public List<IMappable> Creatures { get; }
 
     /// <summary>
     /// Starting positions of creatures.
@@ -45,7 +45,7 @@ public class Simulation
     /// <summary>
     /// Creature which will be moving current turn.
     /// </summary>
-    public Creature CurrentCreature
+    public IMappable CurrentCreature
         => Creatures[_currentMoveIndex % Creatures.Count];
 
     /// <summary>
@@ -73,7 +73,7 @@ public class Simulation
     /// if number of creatures differs from
     /// number of starting positions.
     /// </summary>
-    public Simulation(Map map, List<Creature> creatures,
+    public Simulation(Map map, List<IMappable> creatures,
         List<Point> positions, string moves)
     {
         Map = map ?? throw new ArgumentNullException(nameof(map));
