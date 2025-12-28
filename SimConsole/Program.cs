@@ -8,36 +8,46 @@ using SimConsole;
 Console.OutputEncoding = Encoding.UTF8;
 
 Console.Clear();
-Console.WriteLine("Wybierz animację do uruchomienia:");
-Console.WriteLine("1) Sim1 (przykład z instrukcji)");
+Console.WriteLine("Wybierz animację:");
+Console.WriteLine("1) Sim1 (stary przykład)");
 Console.WriteLine("2) Sim2 (zwierzęta na mapie)");
-Console.Write("Twój wybór (1/2): ");
+Console.WriteLine("3) Sim3 (historia: pokaż tury 5/10/15/20 z Sim2)");
+Console.Write("Twój wybór (1/2/3): ");
 
-char choice = ReadChoice('1', '2');
+char choice = ReadChoice('1', '2', '3');
 Console.Clear();
 
-if (choice == '1')
+switch (choice)
 {
-    Run(Sim1());
-}
-else
-{
-    Run(Sim2());
+    case '1':
+        RunAnimated(Sim1());
+        break;
+
+    case '2':
+        RunAnimated(Sim2());
+        break;
+
+    case '3':
+        RunHistory(Sim3());
+        break;
 }
 
 Console.WriteLine();
-Console.WriteLine("Symulacja zakończona. Naciśnij dowolny klawisz, aby zamknąć...");
+Console.WriteLine("Koniec. Naciśnij dowolny klawisz...");
 Console.ReadKey(true);
 
-static char ReadChoice(char a, char b)
+static char ReadChoice(params char[] allowed)
 {
     while (true)
     {
-        var key = Console.ReadKey(true);
-        if (key.KeyChar == a || key.KeyChar == b)
+        var key = Console.ReadKey(true).KeyChar;
+        foreach (var c in allowed)
         {
-            Console.WriteLine(key.KeyChar);
-            return key.KeyChar;
+            if (key == c)
+            {
+                Console.WriteLine(key);
+                return key;
+            }
         }
     }
 }
@@ -59,7 +69,6 @@ static Simulation Sim1()
     };
 
     string moves = "dlruldl";
-
     return new Simulation(map, objects, positions, moves);
 }
 
@@ -78,7 +87,6 @@ static Simulation Sim2()
         new Birds { Description = "Ostriches", Size = 4, CanFly = false }
     };
 
-    // Startowe pozycje (muszą być w granicach 8x6: x=0..7, y=0..5)
     List<Point> positions = new()
     {
         new Point(1, 1),
@@ -88,19 +96,30 @@ static Simulation Sim2()
         new Point(5, 3)
     };
 
-    // 20 ruchów (U/R/D/L)
-    string moves = "urdlurdlurdlurdlurdl"; // 20 znaków
+    // 20 ruchów
+    string moves = "urdlurdlurdlurdlurdl";
 
     return new Simulation(map, objects, positions, moves);
 }
 
-static void Run(Simulation simulation)
+/// <summary>
+/// Sim3 uses the same setup as Sim2, but returns a SimulationLog (history).
+/// </summary>
+static SimulationLog Sim3()
+{
+    // WAŻNE: SimulationLog wykonuje symulację w konstruktorze i ją “zużywa”.
+    // Dlatego tworzymy nową symulację (taką samą jak w Sim2) i logujemy ją.
+    var sim = Sim2();
+    return new SimulationLog(sim);
+}
+
+static void RunAnimated(Simulation simulation)
 {
     MapVisualizer visualizer = new(simulation.Map);
 
     Console.Clear();
     visualizer.Draw();
-    Console.WriteLine("Naciśnij dowolny klawisz, aby wykonywać kolejne ruchy (Esc – wyjście).");
+    Console.WriteLine("Dowolny klawisz = następny ruch | Esc = wyjście");
 
     while (!simulation.Finished)
     {
@@ -114,6 +133,41 @@ static void Run(Simulation simulation)
         visualizer.Draw();
 
         Console.WriteLine();
-        Console.WriteLine($"Ruch: {simulation.CurrentMoveName}, obiekt: {simulation.CurrentCreature.Name}");
+        Console.WriteLine($"Następny ruch: {simulation.CurrentMoveName}");
+        Console.WriteLine($"Następny obiekt: {simulation.CurrentCreature.Name}");
+    }
+}
+
+static void RunHistory(SimulationLog log)
+{
+    LogVisualizer visualizer = new(log);
+
+    int[] turnsToShow = { 5, 10, 15, 20 };
+
+    foreach (int t in turnsToShow)
+    {
+        Console.Clear();
+
+        // turn index in log: 0 is START, so "5th turn" = index 5
+        if (t < 0 || t >= log.TurnLogs.Count)
+        {
+            Console.WriteLine($"Nie mogę wyświetlić tury {t} (log ma {log.TurnLogs.Count - 1} tur).");
+            Console.WriteLine("Naciśnij dowolny klawisz...");
+            Console.ReadKey(true);
+            continue;
+        }
+
+        var turn = log.TurnLogs[t];
+
+        Console.WriteLine($"TURA: {t}");
+        Console.WriteLine($"Ruch wykonał: {turn.Mappable}");
+        Console.WriteLine($"Ruch: {turn.Move}");
+        Console.WriteLine();
+
+        visualizer.Draw(t);
+
+        Console.WriteLine();
+        Console.WriteLine("Naciśnij dowolny klawisz, aby przejść dalej...");
+        Console.ReadKey(true);
     }
 }
